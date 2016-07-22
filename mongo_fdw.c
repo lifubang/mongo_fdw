@@ -2010,6 +2010,7 @@ MongoAcquireSampleRows(Relation relation, int errorLevel,
 			if (mongoc_cursor_error (mongoCursor, &error))
 			{
 				MongoFreeScanState(fmstate);
+				mongo_cleanup_connection();
 				ereport(ERROR, (errmsg("could not iterate over mongo collection"),
 						errhint("Mongo driver error: %s", error.message)));
 			}
@@ -2018,6 +2019,7 @@ MongoAcquireSampleRows(Relation relation, int errorLevel,
 				if (errorCode != MONGO_CURSOR_EXHAUSTED)
 				{
 					MongoFreeScanState(fmstate);
+					mongo_cleanup_connection();
 					ereport(ERROR, (errmsg("could not iterate over mongo collection"),
 							errhint("Mongo driver cursor error code: %d", errorCode)));
 				}
