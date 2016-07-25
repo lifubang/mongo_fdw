@@ -88,6 +88,11 @@ CREATE EXTENSION mongo_fdw;
 CREATE SERVER mongo_server
          FOREIGN DATA WRAPPER mongo_fdw
          OPTIONS (address '127.0.0.1', port '27017');
+-- or create server object if you use replicaSet on mongo server
+-- the last uri is: mongodb://mongo_user:****@127.0.0.1:3717,127.0.0.1:4717/admin?replicaSet=replsetName-01&readPreference=secondary
+CREATE SERVER mongo_server
+         FOREIGN DATA WRAPPER mongo_fdw
+         OPTIONS (replset 'replsetName-01', address '127.0.0.1:3717,127.0.0.1:4717', read_preference 'secondary');
 
 -- create user mapping
 CREATE USER MAPPING FOR postgres
