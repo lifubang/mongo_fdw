@@ -149,7 +149,7 @@
 #define OPTION_NAME_USERNAME "username"
 #define OPTION_NAME_PASSWORD "password"
 #ifdef META_DRIVER
-#define OPTION_NAME_URI "uri"
+#define OPTION_NAME_REPLSET "replset"
 #define OPTION_NAME_READ_PREFERENCE "read_preference"
 #endif
 
@@ -182,7 +182,7 @@ typedef struct MongoValidOption
 
 /* Array of options that are valid for mongo_fdw */
 #ifdef META_DRIVER
-static const uint32 ValidOptionCount = 7;
+static const uint32 ValidOptionCount = 8;
 #else
 static const uint32 ValidOptionCount = 6;
 #endif
@@ -194,6 +194,7 @@ static const MongoValidOption ValidOptionArray[] =
 
 #ifdef META_DRIVER
 	{ OPTION_NAME_READ_PREFERENCE, ForeignServerRelationId },
+	{ OPTION_NAME_REPLSET, ForeignServerRelationId },
 #endif
 
 	/* foreign table options */
@@ -221,6 +222,7 @@ typedef struct MongoFdwOptions
 	char *svr_username;
 	char *svr_password;
 #ifdef META_DRIVER
+	char *replSet;
 	char *readPreference;
 #endif
 } MongoFdwOptions;
