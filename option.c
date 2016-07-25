@@ -153,6 +153,8 @@ mongo_get_options(Oid foreignTableId)
 	char                    *svr_username= NULL;
 	char                    *svr_password= NULL;
 #ifdef META_DRIVER
+	char                    *replSet = NULL;
+        replSet = mongo_get_option_value(foreignTableId, OPTION_NAME_REPLSET);
 	char                    *readPreference = NULL;
 
 	readPreference = mongo_get_option_value(foreignTableId, OPTION_NAME_READ_PREFERENCE);
@@ -189,6 +191,7 @@ mongo_get_options(Oid foreignTableId)
 	options->svr_password = svr_password;
 
 #ifdef META_DRIVER
+	options->replSet = replSet;
 	options->readPreference = readPreference;
 #endif
 
