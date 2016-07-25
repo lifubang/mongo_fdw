@@ -149,6 +149,7 @@
 #define OPTION_NAME_USERNAME "username"
 #define OPTION_NAME_PASSWORD "password"
 #ifdef META_DRIVER
+#define OPTION_NAME_URI "uri"
 #define OPTION_NAME_READ_PREFERENCE "read_preference"
 #endif
 
