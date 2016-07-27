@@ -1463,6 +1463,7 @@ static Datum
 ColumnValue(BSON_ITERATOR *bsonIterator, Oid columnTypeId, int32 columnTypeMod)
 {
 	Datum columnValue = 0;
+	BSON_TYPE t = BsonIterType(bsonIterator);
 
 	switch(columnTypeId)
 	{
@@ -1481,6 +1482,17 @@ ColumnValue(BSON_ITERATOR *bsonIterator, Oid columnTypeId, int32 columnTypeMod)
 		case INT8OID:
 		{
 			int64 value = BsonIterInt64(bsonIterator);
+			//most values are long type, but sometimes there are some special vlaues.
+			if (value == 0l) {
+                                switch (t) {
+                                        case 1:
+                                                value = BsonIterDouble(bsonIterator);
+                                                break;
+                                        case 16:
+                                                value = BsonIterInt32(bsonIterator);
+                                                break;
+                                }
+			}
 			columnValue = Int64GetDatum(value);
 			break;
 		}
