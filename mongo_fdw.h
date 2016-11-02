@@ -148,6 +148,7 @@
 #define OPTION_NAME_COLLECTION "collection"
 #define OPTION_NAME_USERNAME "username"
 #define OPTION_NAME_PASSWORD "password"
+#define OPTION_NAME_FORCESERVERID "force_server_id"
 #ifdef META_DRIVER
 #define OPTION_NAME_REPLSET "replset"
 #define OPTION_NAME_READ_PREFERENCE "read_preference"
@@ -157,6 +158,7 @@
 #define DEFAULT_IP_ADDRESS "127.0.0.1"
 #define DEFAULT_PORT_NUMBER 27017
 #define DEFAULT_DATABASE_NAME "test"
+#define DEFAULT_FORCE_SERVER_ID true
 
 /* Defines for sending queries and converting types */
 #define EQUALITY_OPERATOR_NAME "="
@@ -196,7 +198,9 @@ static const MongoValidOption ValidOptionArray[] =
 	{ OPTION_NAME_READ_PREFERENCE, ForeignServerRelationId },
 	{ OPTION_NAME_REPLSET, ForeignServerRelationId },
 #endif
-
+    {
+        OPTION_NAME_FORCESERVERID, ForeignServerRelationId
+    },
 	/* foreign table options */
 	{ OPTION_NAME_DATABASE, ForeignTableRelationId },
 	{ OPTION_NAME_COLLECTION, ForeignTableRelationId },
@@ -225,6 +229,7 @@ typedef struct MongoFdwOptions
 	char *replSet;
 	char *readPreference;
 #endif
+    bool force_server_id;
 } MongoFdwOptions;
 
 

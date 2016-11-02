@@ -159,6 +159,14 @@ mongo_get_options(Oid foreignTableId)
 
 	readPreference = mongo_get_option_value(foreignTableId, OPTION_NAME_READ_PREFERENCE);
 #endif
+    char                    *forceServerIdName = NULL;
+    bool                    force_server_id = DEFAULT_FORCE_SERVER_ID;
+
+	forceServerIdName = mongo_get_option_value(foreignTableId, OPTION_NAME_FORCESERVERID);
+	if (forceServerIdName != NULL) {
+        if (strcmp(forceServerIdName, "false") == 0)
+            force_server_id = false;
+	}
 
 	addressName = mongo_get_option_value(foreignTableId, OPTION_NAME_ADDRESS);
 	if (addressName == NULL)
@@ -189,6 +197,7 @@ mongo_get_options(Oid foreignTableId)
 	options->collectionName = collectionName;
 	options->svr_username = svr_username;
 	options->svr_password = svr_password;
+	options->force_server_id = force_server_id;
 
 #ifdef META_DRIVER
 	options->replSet = replSet;

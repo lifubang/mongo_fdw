@@ -286,7 +286,7 @@ MongoGetForeignPaths(PlannerInfo *root, RelOptInfo *baserel, Oid foreignTableId)
 		documentSelectivity = clauselist_selectivity(root, opExpressionList,
 													 0, JOIN_INNER, NULL);
 		inputRowCount = clamp_row_est(documentCount * documentSelectivity);
-		
+
 		/*
 		 * We estimate disk costs assuming a sequential scan over the data. This is
 		 * an inaccurate assumption as Mongo scatters the data over disk pages, and
@@ -328,7 +328,7 @@ MongoGetForeignPaths(PlannerInfo *root, RelOptInfo *baserel, Oid foreignTableId)
 												   NIL); /* no fdw_private data */
 
 	/* add foreign path as the only possible path */
-	add_path(baserel, foreignPath);	
+	add_path(baserel, foreignPath);
 }
 
 
@@ -810,7 +810,7 @@ MongoExecForeignInsert(EState *estate,
 			if (strcmp(slot->tts_tupleDescriptor->attrs[0]->attname.data, "__doc") == 0)
 				continue;
 
-			if (attnum == 1)
+			if (attnum == 1 && (options->force_server_id==true || isnull==true))
 			{
 				/*
 				 * Ignore the value of first column which is row identifier in MongoDb (_id)
@@ -936,7 +936,7 @@ MongoExecForeignUpdate(EState *estate,
 			int attnum = lfirst_int(lc);
 			Datum value;
 			bool isnull;
- 
+
 			if (strcmp("_id", slot->tts_tupleDescriptor->attrs[attnum - 1]->attname.data) == 0)
 				continue;
 
@@ -1157,7 +1157,7 @@ ColumnMappingHash(Oid foreignTableId, List *columnList)
  * pair, the function checks if the key appears in the column mapping hash, and
  * if the value type is compatible with the one specified for the column. If so,
  * the function converts the value and fills the corresponding tuple position.
- * The bsonDocumentKey parameter is used for recursion, and should always be 
+ * The bsonDocumentKey parameter is used for recursion, and should always be
  * passed as NULL.
  */
 static void
@@ -1176,7 +1176,7 @@ FillTupleSlot(const BSON *bsonDocument, const char *bsonDocumentKey,
 	columnMapping = (ColumnMapping *) hash_search(columnMappingHash, hashKey,
 												HASH_FIND, &handleFound);
 
-	if (columnMapping != NULL && handleFound == true && columnValues[columnMapping->columnIndex] == 0) 
+	if (columnMapping != NULL && handleFound == true && columnValues[columnMapping->columnIndex] == 0)
 	{
 		JsonLexContext* lex = NULL;
 		text*           result = NULL;
@@ -1575,7 +1575,7 @@ ColumnValue(BSON_ITERATOR *bsonIterator, Oid columnTypeId, int32 columnTypeMod)
 					value = (char*) BsonIterOid(bsonIterator);
 					value_len = 12;
 					break;
-				default: 
+				default:
 					value = (char*)BsonIterBinData(bsonIterator, (uint32_t *)&value_len);
 					break;
 			}
@@ -1990,7 +1990,7 @@ MongoAcquireSampleRows(Relation relation, int errorLevel,
 	randomState = anl_init_selection_state(targetRowCount);
 
 	columnValues = (Datum *) palloc0(columnCount * sizeof(Datum));
-	columnNulls = (bool *) palloc0(columnCount * sizeof(bool));	
+	columnNulls = (bool *) palloc0(columnCount * sizeof(bool));
 
 	for (;;)
 	{
@@ -2097,7 +2097,7 @@ MongoAcquireSampleRows(Relation relation, int errorLevel,
 	/* clean up */
 	MemoryContextDelete(tupleContext);
 	MongoFreeScanState(fmstate);
-	
+
 	pfree(columnValues);
 	pfree(columnNulls);
 
